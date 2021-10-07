@@ -15,12 +15,13 @@
     :show-error ="false"
     :show-error-message = "false"
     :validate-first = "true"
+    ref="login-form"
     @submit="onLogin"
     @failed="onFailed"
     >
       <van-field
        v-model="user.mobile"
-       name="手机号"
+       name="mobile"
        placeholder="请输入用户名"
        :rules="formRules.mobile"
        >
@@ -29,13 +30,17 @@
 
       <van-field
         v-model="user.code"
-        name="验证码"
+        name="code"
         placeholder="请输入验证码"
         :rules="formRules.code"
         >
         <i slot="left-icon" class="toutiao toutiao-yanzhengma"></i>
         <template #button>
-          <van-button class="send-sms-btn" round size="small" type="default"
+          <van-button
+            class="send-sms-btn"
+            round size="small"
+            type="default"
+            @click.prevent="onSendSms"
             >发送验证码</van-button>
         </template>
       </van-field>
@@ -103,6 +108,23 @@ export default {
         Toast({
           message: error.errors[0].message,
           position: 'top' // t调整提示信息至顶部
+        })
+      }
+    },
+    async onSendSms () {
+      // 校验手机号码
+      // 校验通过 -> 请求发送验证码 -> 用户接受短信 -> 输入验证码 -> 请求登录
+      // 请求发送验证码 -> 隐藏发送按钮，显示倒计时
+      // 倒计时结束 -> 隐藏倒计时，显示发送按钮
+
+      // this.$refs['login-form'].validate('code').then(data => {console.log(data);})
+      try {
+        await this.$refs['login-form'].validate('mobile')
+        // 验证通过，请求发送验证码
+      } catch (err) {
+        Toast({
+          message: err.message,
+          position: 'top' // 调整提示信息至顶部,
         })
       }
     }
