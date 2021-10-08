@@ -36,7 +36,14 @@
         >
         <i slot="left-icon" class="toutiao toutiao-yanzhengma"></i>
         <template #button>
+          <van-count-down
+          v-if="isCountDownShow"
+           :time="1000*5"
+           format="ss s"
+           @finish="isCountDownShow = false"
+            />
           <van-button
+            v-else
             class="send-sms-btn"
             round size="small"
             type="default"
@@ -74,7 +81,8 @@ export default {
           { required: true, message: '请输入验证码' },
           { pattern: /^\d{9}$/, message: '验证码格式错误' }
         ]
-      }
+      },
+      isCountDownShow: false // 控制倒计时和发送按钮的显示状态
     }
   },
   methods: {
@@ -107,7 +115,7 @@ export default {
       if (error.errors[0]) {
         Toast({
           message: error.errors[0].message,
-          position: 'top' // t调整提示信息至顶部
+          position: 'top' // 调整提示信息至顶部
         })
       }
     },
@@ -122,8 +130,11 @@ export default {
         // 校验手机号码
         await this.$refs['login-form'].validate('mobile')
         // 验证通过，请求发送验证码
-        const res = await sendSms(this.user.mobile)
-        console.log(res)
+        await sendSms(this.user.mobile)
+        // 发出短信后，隐藏发送按钮，显示倒计时
+        this.isCountDownShow = true
+        // 倒计时结束 -> 隐藏倒计时，显示发送按钮
+        // 监视倒计时的 finish 事件
       } catch (err) {
         // try 里面的任何代码的错误都会进入 catch
         // 不同的错误需要有不同的提示，下面进行错误类型的判断
