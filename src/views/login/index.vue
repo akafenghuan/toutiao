@@ -22,7 +22,8 @@
       <van-field
        v-model="user.mobile"
        name="mobile"
-       placeholder="请输入用户名"
+       placeholder="请输入手机号"
+       center
        :rules="formRules.mobile"
        >
         <i slot="left-icon" class="toutiao toutiao-shouji"></i>
@@ -32,6 +33,7 @@
         v-model="user.code"
         name="code"
         placeholder="请输入验证码"
+        center
         :rules="formRules.code"
         >
         <i slot="left-icon" class="toutiao toutiao-yanzhengma"></i>
@@ -47,6 +49,7 @@
             class="send-sms-btn"
             round size="small"
             type="default"
+            :loading="isSendSmsLoading"
             @click.prevent="onSendSms"
             >发送验证码</van-button>
         </template>
@@ -82,7 +85,8 @@ export default {
           { pattern: /^\d{9}$/, message: '验证码格式错误' }
         ]
       },
-      isCountDownShow: false // 控制倒计时和发送按钮的显示状态
+      isCountDownShow: false, // 控制倒计时和发送按钮的显示状态
+      isSendSmsLoading: false
     }
   },
   methods: {
@@ -130,6 +134,7 @@ export default {
         // 校验手机号码
         await this.$refs['login-form'].validate('mobile')
         // 验证通过，请求发送验证码
+        this.isSendSmsLoading = true // 展示按钮的loading状态，防止网络吗用户多次点击触发发送行为
         await sendSms(this.user.mobile)
         // 发出短信后，隐藏发送按钮，显示倒计时
         this.isCountDownShow = true
@@ -154,6 +159,8 @@ export default {
           position: 'top' // 调整提示信息至顶部,
         })
       }
+      // 无论验证码成功还是失败，最后都要关闭发送按钮的 Loading 状态
+      this.isSendSmsLoading = false
     }
   }
 
