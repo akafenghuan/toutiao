@@ -82,11 +82,11 @@ export default {
         ],
         code: [
           { required: true, message: '请输入验证码' },
-          { pattern: /^\d{9}$/, message: '验证码格式错误' }
+          { pattern: /^\d{6}$/, message: '验证码格式错误' }
         ]
       },
       isCountDownShow: false, // 控制倒计时和发送按钮的显示状态
-      isSendSmsLoading: false
+      isSendSmsLoading: false // 控制发送按钮的等待状态是否显示
     }
   },
   methods: {
@@ -101,17 +101,23 @@ export default {
       })
       // 3.提交表单请求登录
       try {
-        const res = await login(user)
+        const { data } = await login(user)
+        // 4.处理响应结果
         Toast.success('登录成功')
-        console.log('登录成功', res)
+        // console.log('登录成功', res)
+
+        // 将后端返回的登录状态（token等数据），放到Vuex容器中
+        this.$store.commit('setUser', data.data)
       } catch (err) {
-        if (err.response.status === 400) {
-          Toast.fail('手机号或验证码错误')
-          console.log('手机号或验证码错误', err)
-        } else {
-          console.log('请稍后再试')
-          Toast.fail('登录失败，请稍后重试')
-        }
+        console.log('登录失败', err)
+        Toast.fail('登录失败，手机号或验证码错误')
+        // if (err.response.status === 400) {
+        //   Toast.fail('手机号或验证码错误')
+        //   // console.log('手机号或验证码错误', err)
+        // } else {
+        //   // console.log('请稍后再试')
+        //   Toast.fail('登录失败，请稍后重试')
+        // }
       }
     },
     onFailed (error) {
