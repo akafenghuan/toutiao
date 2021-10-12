@@ -20,3 +20,18 @@ export const sendSms = (mobile) => {
 
   })
 }
+
+/*
+    获取用户登录信息
+*/
+export const getCurrentUser = () => {
+  return request({
+    method: 'GET',
+    url: '/app/v1_0/user'
+    //   将以下部分放入请求拦截器
+    //   headers:{
+    //     Authorization:`Bearer ${store.state.user.token}`
+    //   }
+
+  })
+}

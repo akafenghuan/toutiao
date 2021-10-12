@@ -108,6 +108,9 @@ export default {
 
         // 将后端返回的登录状态（token等数据），放到Vuex容器中
         this.$store.commit('setUser', data.data)
+
+        // 登录成功 跳转回原来的页面
+        this.$router.back()
       } catch (err) {
         console.log('登录失败', err)
         Toast.fail('登录失败，手机号或验证码错误')
