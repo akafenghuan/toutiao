@@ -10,9 +10,30 @@ const routes = [
     component: () => import('@/views/login')
   },
   {
-    name: 'my',
-    path: '/my',
-    component: () => import('@/views/my')
+    path: '/',
+    component: () => import('@/views/layout'),
+    children: [
+      {
+        path: '', // 默认子路由，只能有1个
+        name: 'home',
+        component: () => import('@/views/home')
+      },
+      {
+        path: '/qa',
+        name: 'qa',
+        component: () => import('@/views/qa')
+      },
+      {
+        path: '/video',
+        name: 'video',
+        component: () => import('@/views/video')
+      },
+      {
+        path: '/my',
+        name: 'my',
+        component: () => import('@/views/my')
+      }
+    ]
   }
 ]
 const router = new VueRouter({

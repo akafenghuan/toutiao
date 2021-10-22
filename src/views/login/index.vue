@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <!-- 导航栏 -->
-    <van-nav-bar class="page-nav-bar" title="登录" />
+    <van-nav-bar class="page-nav-bar" title="登录/注册" />
     <!-- /导航栏 -->
     <!--
       1.使用 vant-form 组件包裹所有的表单项 van-filed
